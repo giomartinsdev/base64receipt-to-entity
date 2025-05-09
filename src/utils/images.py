@@ -8,14 +8,14 @@ scanning directories for images and extracting text using OCR.
 import os
 import base64
 import io
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from PIL import Image
 import pytesseract
 import logging
 
 
 def scan_images_to_text(logger: logging.Logger, 
-                        receipts_dir: str = "src/receipts") -> List[Dict[str, Any]]:
+                        receipts_dir: str = os.getenv("RECEIPTS_DIR")) -> List[Dict[str, Any]]:
     """
     Scan all images in the specified directory and extract text using OCR.
     

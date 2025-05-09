@@ -6,10 +6,10 @@ throughout the application.
 """
 
 import logging
-from typing import Optional
+import os
 
 
-def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
+def get_logger(name: str, level: int = os.getenv("LOG_LEVEL")) -> logging.Logger:
     """
     Get a configured logger with the specified name and level.
     

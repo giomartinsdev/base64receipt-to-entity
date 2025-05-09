@@ -1,47 +1,13 @@
+version: '3'
+
 services:
-  # Main API service for receipt processing
   receipt_api:
-    container_name: receipt_api
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     ports:
-      - "8000:8000"  # API port
+      - "8000:8000"
     volumes:
-      - ./src:/app/src                   # Mount source code
-      - ./config:/app/config             # Mount configuration
-      - receipts_data:/app/src/receipts  # Persist receipt images
-      - model_cache:/app/.cache          # Persist model cache
-    networks:
-      - receipt-net
+      - ./src:/app/src
     env_file:
-      - .env                             # Load from environment file
-    environment:
-      # PyTorch and CUDA settings
-      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:64
-      - CUDA_VISIBLE_DEVICES=0
-      - PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0  # Lower watermark for memory usage
-      # HuggingFace cache settings
-      - HF_HOME=/app/.cache/huggingface
-      - TRANSFORMERS_CACHE=/app/.cache/huggingface
-      # Performance settings
-      - OMP_NUM_THREADS=4                # Limit CPU threads
-      - PYTHONUNBUFFERED=1               # Unbuffered Python output
-    # Resource limits to avoid OOM issues
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              capabilities: [gpu]        # Request GPU access
-        limits:
-          memory: 3.5G                   # Limit container memory
-
-volumes:
-  receipts_data:          # For persisting receipt images
-  model_cache:            # For caching ML models and weights
-
-networks:
-  receipt-net:
-    driver: bridge        # Internal network for Receipt API services
+      - .env

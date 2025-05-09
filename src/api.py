@@ -12,13 +12,11 @@ from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List
 import uvicorn
 import base64
-import io
 from datetime import datetime
 
-from utils.logging import get_logger
-from llm.llm import llm_parse_text_to_receipt
-from utils.images import scan_images_to_text, image_to_text
-from entities.receipt import Receipt
+from src.utils.logging import get_logger
+from src.llm.llm import llm_parse_text_to_receipt
+from src.utils.images import scan_images_to_text
 
 # Initialize FastAPI app
 app = FastAPI(

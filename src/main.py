@@ -6,13 +6,13 @@ This module serves as the entry point for the receipt processing application,
 providing both batch processing functionality and an API server.
 """
 
-import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import uvicorn
+import os
 
-from api import app
-from utils.logging import get_logger
-from entities.receipt import Receipt
+from src.api import app
+from src.utils.logging import get_logger
+from src.entities.receipt import Receipt
 
 
 def process_receipts_batch() -> List[Dict[str, Any]]:
@@ -52,4 +52,4 @@ def process_receipts_batch() -> List[Dict[str, Any]]:
 
 if __name__ == "__main__":
     # Run the FastAPI application
-    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("src.api:app", host=os.getenv("API_HOST"), port=os.getenv("API_PORT"), reload=os.getenv("API_HOT_RELOAD", True))

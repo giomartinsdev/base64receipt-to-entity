@@ -149,3 +149,9 @@ If OCR text extraction is poor:
 1. Check Tesseract installation and version
 2. Pre-process images (resize, increase contrast, etc.)
 3. Consider using a different OCR engine
+
+
+## Issues with ContainerConfig
+# Stop and remove all containers
+1. `docker stop $(docker ps -a -q) 2>/dev/null || true`
+2. `docker rm $(docker ps -a -q) 2>/dev/null || true`

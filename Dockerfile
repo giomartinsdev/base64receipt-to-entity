@@ -4,7 +4,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Set environment variables
-ENV PYTHONFAULTHANDLER=1 \
+ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=on
@@ -31,11 +31,11 @@ RUN pip install --upgrade pip && \
 # Copy the project code
 COPY . .
 
-# Create the receipts directory
+# Create directories
 RUN mkdir -p src/receipts
 
 # Expose the port
 EXPOSE 8000
 
 # Run the app
-CMD ["python", "-m", "src.main"]
+CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]

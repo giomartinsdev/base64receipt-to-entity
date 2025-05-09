@@ -5,16 +5,39 @@ This module provides functions for processing receipt text using language models
 to extract structured information.
 """
 
-from typing import Optional, Dict, Any, Union
+from typing import Optional
 import logging
 import torch
 import json
-import re
-from transformers import Pipeline, pipeline, AutoTokenizer, AutoModelForCausalLM
+from transformers import Pipeline, pipeline
+import os
+from huggingface_hub import login
+from src.entities.receipt import Receipt
+from src.llm.prompt import PROMPT
+from src.utils.text import apply_regex
 
-from entities.receipt import Receipt
-from llm.prompt import PROMPT
-from utils.text import apply_regex
+def login_huggingface(token: str) -> bool:
+    """
+    Login to Hugging Face with the provided token or from environment variable.
+    
+    This function authenticates with the Hugging Face Hub, allowing access to
+    gated models and features that require authentication.
+    
+    Args:
+        token str: Hugging Face API token. If None, will attempt to
+                             get from HF_TOKEN environment variable.
+    
+    Returns:
+        bool: True if login was successful, False otherwise
+
+    """
+    try:        
+        login(token=token)
+        logging.info("Successfully logged in to Hugging Face Hub")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to login to Hugging Face Hub: {str(e)}")
+        return False
 
 
 def get_pipeline() -> Pipeline:
@@ -27,6 +50,8 @@ def get_pipeline() -> Pipeline:
     Returns:
         Pipeline: A configured text generation pipeline
     """
+    login_huggingface(os.getenv("HF_TOKEN"))
+
     # Check if CUDA is available, otherwise fall back to CPU
     has_cuda = torch.cuda.is_available()
     
@@ -37,18 +62,17 @@ def get_pipeline() -> Pipeline:
         # When using device_map="auto", don't specify device parameter
         return pipeline(
             "text-generation", 
-            model="google/gemma-3-1b-it",
+            model=os.getenv("MODEL_NAME"),
             torch_dtype=torch.bfloat16,
             model_kwargs={
                 "low_cpu_mem_usage": True,
-                "device_map": "auto"  # Automatically handle memory distribution
+                "device_map": os.getenv("DEVICE", "auto"),
             }
         )
     else:
-        # Fall back to CPU with reduced memory usage
         return pipeline(
             "text-generation", 
-            model="google/gemma-3-1b-it",
+            model=os.getenv("MODEL_NAME"),
             device="cpu",
             model_kwargs={"low_cpu_mem_usage": True}
         )
