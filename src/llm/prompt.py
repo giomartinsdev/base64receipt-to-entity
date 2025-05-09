@@ -1,4 +1,14 @@
-PROMPT = '''
+"""
+LLM Prompt Module
+
+This module contains the prompt templates used for interacting with 
+language models to extract information from receipt text.
+"""
+
+from typing import Final
+
+# Main prompt for extracting receipt information
+PROMPT: Final[str] = '''
 LOCALE:PT_BR
 
 You are an expert at extracting specific information from text. Your task is to carefully read the provided receipt text and identify the following information:
@@ -12,7 +22,8 @@ Based on the information extracted, generate a JSON string containing ONLY the f
 - KEEP THE EXACT FORMAT as it appears in the text, including currency symbol
 - DO NOT convert to decimal format
 - Make sure it's a STRING with the ORIGINAL formatting (e.g., "R$ 1,58") be aware of the commas and dots
-- DO NOT PICK UP THE DOCUMENT, 09438209 IS NOT a Value
+- DO NOT PICK UP THE DOCUMENT, numbers like 18236120 IS NOT a Value its a document number
+- BE AWARE TO THE COMMAS AND DOTS, they are important
 
 Here is the receipt text:
 {text}
