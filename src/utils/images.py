@@ -25,7 +25,6 @@ def scan_images_to_text(logger):
                 image = Image.open(io.BytesIO(image_bytes))
                 text = pytesseract.image_to_string(image)
                 
-                # Only extract text without LLM parsing
                 result = {
                     "file": file,
                     "text": text.strip(),

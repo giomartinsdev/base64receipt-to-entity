@@ -12,6 +12,7 @@ Based on the information extracted, generate a JSON string containing ONLY the f
 - KEEP THE EXACT FORMAT as it appears in the text, including currency symbol
 - DO NOT convert to decimal format
 - Make sure it's a STRING with the ORIGINAL formatting (e.g., "R$ 1,58") be aware of the commas and dots
+- DO NOT PICK UP THE DOCUMENT, 09438209 IS NOT a Value
 
 Here is the receipt text:
 {text}
