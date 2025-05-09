@@ -1,4 +1,14 @@
-PROMPT = '''
+"""
+LLM Prompt Module
+
+This module contains the prompt templates used for interacting with 
+language models to extract information from receipt text.
+"""
+
+from typing import Final
+
+# Main prompt for extracting receipt information
+PROMPT: Final[str] = '''
 LOCALE:PT_BR
 
 You are an expert at extracting specific information from text. Your task is to carefully read the provided receipt text and identify the following information:

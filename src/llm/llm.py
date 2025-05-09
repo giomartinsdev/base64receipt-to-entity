@@ -1,12 +1,32 @@
+"""
+Language Model Processing Module
+
+This module provides functions for processing receipt text using language models
+to extract structured information.
+"""
+
+from typing import Optional, Dict, Any, Union
+import logging
+import torch
+import json
+import re
+from transformers import Pipeline, pipeline, AutoTokenizer, AutoModelForCausalLM
+
 from entities.receipt import Receipt
 from llm.prompt import PROMPT
 from utils.text import apply_regex
-from transformers import pipeline
-import torch
-import re
-import json
 
-def get_pipeline():
+
+def get_pipeline() -> Pipeline:
+    """
+    Initialize and return a text generation pipeline with appropriate settings.
+    
+    The function detects available hardware and configures the pipeline accordingly,
+    with optimized settings for either GPU or CPU usage.
+    
+    Returns:
+        Pipeline: A configured text generation pipeline
+    """
     # Check if CUDA is available, otherwise fall back to CPU
     has_cuda = torch.cuda.is_available()
     
@@ -33,7 +53,21 @@ def get_pipeline():
             model_kwargs={"low_cpu_mem_usage": True}
         )
 
-def llm_parse_text_to_receipt(logger, text):
+def llm_parse_text_to_receipt(logger: logging.Logger, text: str) -> Optional[Receipt]:
+    """
+    Parse text extracted from a receipt image using a language model.
+    
+    This function processes the text through an LLM to extract structured information
+    and returns it as a Receipt object. It includes automatic handling of text length,
+    memory optimization, and fallback mechanisms for error cases.
+    
+    Args:
+        logger (logging.Logger): Logger for recording processing information
+        text (str): Text extracted from receipt image
+        
+    Returns:
+        Optional[Receipt]: A Receipt object with structured data, or None if processing failed
+    """
     try:
         # Get token count estimate (to prevent processing texts that are too long)
         original_length = len(text)
@@ -69,7 +103,7 @@ def llm_parse_text_to_receipt(logger, text):
         json_part = apply_regex(generated_text, r'\{[^{]*?\}')
         
         try:
-            data = json.loads(json_part)
+            data = json.loads(json_part) if json_part else {}
         except Exception as e:
             logger.error(f"Failed to parse JSON from LLM response: {e}")
             return None
@@ -94,8 +128,20 @@ def llm_parse_text_to_receipt(logger, text):
         value=data.get("value")
     )
 
-def process_with_cpu(logger, text):
-    """Fallback method to process text using CPU when GPU runs out of memory"""
+def process_with_cpu(logger: logging.Logger, text: str) -> Optional[Receipt]:
+    """
+    Fallback method to process text using CPU when GPU runs out of memory.
+    
+    This function provides a more memory-efficient way to process receipt text
+    when GPU memory is insufficient, using the CPU with reduced model settings.
+    
+    Args:
+        logger (logging.Logger): Logger for recording processing information
+        text (str): Text extracted from receipt image
+        
+    Returns:
+        Optional[Receipt]: A Receipt object with structured data, or None if processing failed
+    """
     logger.info("Processing receipt text using CPU...")
     try:
         # Force CPU
@@ -136,7 +182,7 @@ def process_with_cpu(logger, text):
             json_part = apply_regex(generated_text, r'\{[^{]*?\}')
             
             try:
-                data = json.loads(json_part)
+                data = json.loads(json_part) if json_part else {}
             except Exception as e:
                 logger.error(f"Failed to parse JSON from CPU LLM response: {e}")
                 return None

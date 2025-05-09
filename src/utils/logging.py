@@ -1,19 +1,33 @@
-import logging
+"""
+Logging Configuration Module
 
-# Configure logging
-def get_logger(name):
+This module provides utilities for setting up and configuring logging
+throughout the application.
+"""
+
+import logging
+from typing import Optional
+
+
+def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
     """
-    Get a logger with the specified name.
+    Get a configured logger with the specified name and level.
+    
+    This function configures a logger with appropriate formatting for
+    consistent logging across the application.
     
     Args:
-        name (str): The name of the logger.
+        name (str): The name of the logger
+        level (int, optional): The logging level. Defaults to logging.INFO
         
     Returns:
-        logging.Logger: A logger instance.
+        logging.Logger: A configured logger instance
     """
+    # Configure basic logging format
     logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
+        level=level,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    
     return logging.getLogger(name)

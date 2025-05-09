@@ -1,27 +1,41 @@
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (including tesseract for OCR)
-RUN apt-get update && apt-get install -y \
+# Set environment variables
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=on
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libffi-dev \
     tesseract-ocr \
+    libtesseract-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libtiff-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Copy requirements file
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# Copy project files
+# Copy the project code
 COPY . .
 
-# Create necessary directories
-RUN mkdir -p /app/src/receipts
+# Create the receipts directory
+RUN mkdir -p src/receipts
 
 # Expose the port
 EXPOSE 8000
 
-# Set the entry point
-CMD ["python", "src/main.py"]
+# Run the app
+CMD ["python", "-m", "src.main"]
