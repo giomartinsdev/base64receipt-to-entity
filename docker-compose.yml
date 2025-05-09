@@ -1,6 +1,36 @@
 version: '3.3'
 
 services:
+  receipt_api:
+    container_name: receipt_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+    networks:
+      - receipt-net
+    environment:
+      - DEBUG=True
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:64
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0  # Lower watermark for memory usage
+      - HF_HOME=/app/.cache/huggingface    # Cache HuggingFace models
+      - TRANSFORMERS_CACHE=/app/.cache/huggingface
+      - OMP_NUM_THREADS=4                  # Limit CPU threads
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+        limits:
+          memory: 3.5G  # Limit container memory to avoid OOM
+      
   api:
     container_name: evolution_api
     image: atendai/evolution-api:v2.1.1
@@ -42,4 +72,6 @@ volumes:
 
 networks:
   evolution-net:
+    driver: bridge
+  receipt-net:
     driver: bridge
