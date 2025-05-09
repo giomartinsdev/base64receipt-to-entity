@@ -104,12 +104,6 @@ curl -X POST http://localhost:8000/api/base64-to-receipt \
 curl http://localhost:8000/api/ping
 ```
 
-### Scan All Receipts in Directory
-
-```bash
-curl http://localhost:8000/api/scan-receipts
-```
-
 ## Memory Optimization
 
 The system includes several memory optimization features:

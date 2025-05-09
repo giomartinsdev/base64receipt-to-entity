@@ -12,7 +12,6 @@ This guide provides detailed information for developers working on the Receipt I
 ├── src/                   # Source code
 │   ├── __init__.py        # Package initialization
 │   ├── api.py             # FastAPI implementation
-│   ├── main.py            # Application entry point
 │   ├── entities/          # Data models
 │   │   └── receipt.py     # Receipt entity
 │   ├── llm/               # Language model integration
@@ -54,13 +53,6 @@ The key function is `llm_parse_text_to_receipt`, which:
 - Processes text with a language model
 - Extracts structured data from the model output
 - Returns a Receipt object
-
-### Image Processing
-
-The `utils/images.py` module provides functions for working with receipt images:
-
-- `scan_images_to_text`: Scans a directory for receipt images and extracts text
-- `image_to_text`: Extracts text from a single image
 
 ### API Endpoints
 
@@ -153,5 +145,4 @@ If OCR text extraction is poor:
 
 ## Issues with ContainerConfig
 # Stop and remove all containers
-1. `docker stop $(docker ps -a -q) 2>/dev/null || true`
-2. `docker rm $(docker ps -a -q) 2>/dev/null || true`
+1. `docker stop $(docker ps -a -q) 2>/dev/null || true && docker rm $(docker ps -a -q) 2>/dev/null || true`

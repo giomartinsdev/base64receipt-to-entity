@@ -17,7 +17,7 @@ from src.entities.receipt import Receipt
 from src.llm.prompt import PROMPT
 from src.utils.text import apply_regex
 
-load_dotenv()
+load_dotenv(override=True)
 
 def login_huggingface(token: str) -> bool:
     """
