@@ -75,8 +75,7 @@ brew install tesseract
 
 Start the API server:
 ```bash
-cd src
-python main.py
+uvicorn src.api:app --host 0.0.0.0 --port 8000  ## you can change host and port  
 ```
 
 The API will be available at `http://localhost:8000`.
