@@ -9,7 +9,7 @@ import logging
 import os
 
 
-def get_logger(name: str, level: int = os.getenv("LOG_LEVEL")) -> logging.Logger:
+def get_logger(name: str, level: int = "INFO") -> logging.Logger:
     """
     Get a configured logger with the specified name and level.
     

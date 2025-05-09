@@ -12,8 +12,11 @@ import os
 
 from src.api import app
 from src.utils.logging import get_logger
-from src.entities.receipt import Receipt
+from dotenv import load_dotenv
+from src.utils.images import scan_images_to_text
+from src.llm.llm import llm_parse_text_to_receipt
 
+load_dotenv()
 
 def process_receipts_batch() -> List[Dict[str, Any]]:
     """
@@ -25,8 +28,6 @@ def process_receipts_batch() -> List[Dict[str, Any]]:
     Returns:
         List[Dict[str, Any]]: List of processed receipts with extracted information
     """
-    from utils.images import scan_images_to_text
-    from llm.llm import llm_parse_text_to_receipt
     
     logger = get_logger(__name__)
     logger.info("Starting receipt processing in batch mode")

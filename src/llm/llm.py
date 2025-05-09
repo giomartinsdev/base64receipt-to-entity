@@ -11,10 +11,13 @@ import torch
 import json
 from transformers import Pipeline, pipeline
 import os
+from dotenv import load_dotenv
 from huggingface_hub import login
 from src.entities.receipt import Receipt
 from src.llm.prompt import PROMPT
 from src.utils.text import apply_regex
+
+load_dotenv()
 
 def login_huggingface(token: str) -> bool:
     """
@@ -125,7 +128,7 @@ def llm_parse_text_to_receipt(logger: logging.Logger, text: str) -> Optional[Rec
             torch.cuda.empty_cache()
         
         json_part = apply_regex(generated_text, r'\{[^{]*?\}')
-        
+
         try:
             data = json.loads(json_part) if json_part else {}
         except Exception as e:
