@@ -7,13 +7,12 @@ language models to extract information from receipt text.
 
 from typing import Final
 
-# Main prompt for extracting receipt information
 PROMPT: Final[str] = '''
 LOCALE:PT_BR
 
 You are an expert at extracting specific information from text. Your task is to carefully read the provided receipt text and identify the following information:
-- sender: the person sending/initiating the payment
-- receiver: the person receiving the payment 
+- sender: the person sending/initiating the payment this must be a person or an entity not a phrase like "pagamento de" or "pix enviado por"
+- receiver: the person receiving the payment this must be a person or an entity not a phrase like "pagamento de" or "pix enviado por"
 - amount: the monetary amount transferred (KEEP EXACT FORMAT as in text)
 - value: same as amount, but as a string with original formatting
 - description: the purpose or description of the transaction
